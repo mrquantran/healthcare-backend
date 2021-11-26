@@ -6,7 +6,7 @@ const users = [
     email: "quantran2381@gmail.com",
     firstName: "Quan",
     lastName: "Tran",
-    password: "Quantran@238200",
+    password: "123456",
     type: TYPE_USER.user,
   },
   {

@@ -20,7 +20,7 @@ const components = {
           email: {
             type: "string",
             description: "email user",
-            example: "grace@hey.com",
+            example: "quantran2381@gmail.com",
           },
           password: {
             type: "string",

@@ -1,5 +1,9 @@
+import account from './account/index.js';
+
 const path = {
-  paths: {},
+  paths: {
+    ...account
+  },
 };
 
 export default path;
