@@ -11,6 +11,11 @@ async function main() {
   // delete all data
   await prisma.token.deleteMany({});
   await prisma.user.deleteMany({});
+  await prisma.categories.deleteMany({});
+  await prisma.bookingCategory.deleteMany({});
+  await prisma.bookingDate.deleteMany({});
+  await prisma.booking.deleteMany({});
+
 
   // users
   for (const user of data.users) {
@@ -30,6 +35,38 @@ async function main() {
       },
     });
   }
+
+  // category
+  for (const category of data.bookingCategory) {
+    await prisma.categories.create({
+      data: {
+        title: category.name,
+        description: category.description
+      },
+    });
+  }
+
+  //booking
+  for (const booking of data.bookings) {
+    await prisma.booking.create({
+      data: {
+        title: booking.title,
+        place: booking.place,
+        status: booking.status,
+        user: {
+          connect: {
+            email:booking.user
+          }
+        },
+        date: {
+          create: booking.date.map((item) => ({
+            startDate: item,
+          }))
+        },
+      },
+    });
+  }
+
 }
 
 main()

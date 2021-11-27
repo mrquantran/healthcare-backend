@@ -3,6 +3,12 @@ export const TYPE_USER = {
   user: "USER",
 };
 
+export const STATUS = {
+  pending: "PENDING",
+  approve: "APPROVE",
+  reject: "REJECTED"
+};
+
 // algorithm
 export const JWT_ALGORITHM = 'HS256';
 
