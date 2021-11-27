@@ -25,8 +25,8 @@ app.use(cors({ origin: corsUrl, optionsSuccessStatus: 200 }));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(docs));
 
-// Routes
-app.use("/", router);
+// Routes v1 version
+app.use("/v1", router);
 
 /**
  * Any error handler middleware must be added AFTER you define your routes.
