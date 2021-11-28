@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import { FORMAT_DATE, STATUS } from '../../constant/ENUM.js';
 import { getDecodedToken } from '../../helpers/auth.helper.js';
 import moment from 'moment'
-import { formatISO } from 'date-fns';
+import { TYPE_USER } from './../../constant/ENUM.js';
 
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
@@ -44,40 +44,96 @@ const getBookings = async (req, res) => {
         const filter = req.query;
 
         const token = await getDecodedToken(req);
-        const data = await prisma.booking.findMany({
-            where: {
-                user: {
-                    email: token.email,
-                }
-            },
-            orderBy: [
-                { status: 'asc' },
-                { createdAt: 'desc'}
-            ],
-            select: {
-                id: true,
-                title: true,
-                place: true,
-                status: true,
-                user: {
-                    select: {
-                        email: true,
+
+        let data;
+        if (token.type === TYPE_USER.user) {
+            data = await prisma.booking.findMany({
+                where: {
+                    user: {
+                        email: token.email,
                     }
                 },
-                date: {
-                    select: {
-                        startDate: true,
-                        isConfirm: true,
+                orderBy: [
+                    { status: 'asc' },
+                    { createdAt: 'desc' }
+                ],
+                select: {
+                    id: true,
+                    title: true,
+                    place: true,
+                    status: true,
+                    category: {
+                        select: {
+                            category: {
+                                select: {
+                                    title: true,
+                                }
+                            }
+                        }
+                    },
+                    user: {
+                        select: {
+                            email: true,
+                        }
+                    },
+                    date: {
+                        select: {
+                            startDate: true,
+                            isConfirm: true,
+                        }
                     }
-                }
 
-            }
-        })
+                }
+            })
+        } else if (token.type === TYPE_USER.admin) {
+            data = await prisma.booking.findMany({
+                orderBy: [
+                    { status: 'desc' },
+                    { createdAt: 'desc' }
+                ],
+                select: {
+                    id: true,
+                    title: true,
+                    place: true,
+                    status: true,
+                    category: {
+                        select: {
+                            category: {
+                                select: {
+                                    title: true,
+                                }
+                            }
+                        }
+                    },
+                    user: {
+                        select: {
+                            email: true,
+                        }
+                    },
+                    date: {
+                        select: {
+                            startDate: true,
+                            isConfirm: true,
+                        }
+                    }
+
+                }
+            })
+
+            // change reject item to last index 
+             data.push(data.shift());
+        }
 
         if (data) {
             const mappingData = data.map((item) => {
-                const { user, ...rest } = item
-                return { ...rest, email: user.email }
+                const { user, category, ...rest } = item
+
+                let title = null;
+                if (category && category.category) {
+                    title = category.category.title
+                }
+                
+                return { ...rest, email: user.email, category: title }
             })
 
             //handle filter data
@@ -111,7 +167,7 @@ const createBooking = async (req, res) => {
         })
 
         const token = await getDecodedToken(req);
-        
+
         const data = await prisma.booking.create({
             data: {
                 title: title,
@@ -139,7 +195,7 @@ const createBooking = async (req, res) => {
             }
         })
 
-        return res.status(200).json({message:'Create new booking successfully'})
+        return res.status(200).json({ message: 'Create new booking successfully' })
     } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
