@@ -29,6 +29,26 @@ const components = {
           },
         },
       },
+      Bookings: {
+        type: "object",
+        properties: {
+          title: {
+            type: "string",
+            description: "title",
+            example: "Booking Review 1",
+          },
+          place: {
+            type: "string",
+            description: "place booking",
+            example: "123456",
+          },
+          status: {
+            type: "string",
+            description: "password user",
+            example: "Pending",
+          }
+        },
+      },
       Error: {
         type: "object",
         properties: {
