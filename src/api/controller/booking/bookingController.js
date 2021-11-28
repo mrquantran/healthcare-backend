@@ -112,6 +112,7 @@ const getBookings = async (req, res) => {
                     },
                     date: {
                         select: {
+                            id: true,
                             startDate: true,
                             isConfirm: true,
                         }
@@ -121,7 +122,15 @@ const getBookings = async (req, res) => {
             })
 
             // change reject item to last index 
-             data.push(data.shift());
+            const rejectItem = data.filter((item) => {
+                return item.status === STATUS.reject
+            })
+
+            const restItem = data.filter((item) => {
+                return item.status !== STATUS.reject
+            })
+
+            data = [...restItem, ...rejectItem]
         }
 
         if (data) {
@@ -132,7 +141,7 @@ const getBookings = async (req, res) => {
                 if (category && category.category) {
                     title = category.category.title
                 }
-                
+
                 return { ...rest, email: user.email, category: title }
             })
 
@@ -247,8 +256,97 @@ const deleteBooking = async (req, res) => {
     }
 }
 
+const updateStatusBooking = async (req, res) => {
+    try {
+        const { dateId } = req.query;
+        const { status } = req.body;
+        const { id } = req.params;
+        const token = await getDecodedToken(req);
+
+        // if not admin
+        if (token.type !== TYPE_USER.admin) {
+            return res.status(403).json({ message: 'Do not have permission to perform this action!' })
+        }
+
+        // only have dateId || status
+        if (dateId && !status) {
+
+            // 1. find booking date
+            const bookingDate = await prisma.bookingDate.findMany({
+                where: {
+                    bookingId: id
+                }
+            })
+
+            let newBookingDate = [...bookingDate]
+            newBookingDate = newBookingDate.map((item) => {
+                if (item.id === dateId) {
+                    return { ...item, isConfirm: true }
+                }
+                return { ...item, isConfirm: false, isActive: false }
+            })
+
+            //2. update booking date status
+            newBookingDate.forEach(async (item) => {
+                await prisma.bookingDate.update({
+                    where: {
+                        id: item.id
+                    },
+                    data: {
+                        isConfirm: item.isConfirm,
+                        isActive: item.isActive,
+                    }
+                })
+            })
+
+            //3. update booking status
+            await prisma.booking.update({
+                where: {
+                    id
+                },
+                data: {
+                    status: STATUS.approve
+                }
+            })
+        }
+
+        if (status && !dateId) {
+
+            const bookingItem = await prisma.booking.findUnique({
+                where: { id }
+            })
+
+            if (bookingItem) {
+                //update booking status
+                await prisma.booking.update({
+                    where: {
+                        id
+                    },
+                    data: {
+                        status: status
+                    }
+                })
+            } else {
+                return res.status(401).json({ message: 'No data' })
+
+            }
+        }
+
+        return res.status(200).json({ message: 'Update booking items successfully' })
+
+    }
+    catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        // 500 (Internal Server Error) - Something has gone wrong in your application.
+        const httpError = createHttpError(500, error);
+        return res.status(500).json({ message: httpError });
+    }
+}
+
 export const booking = {
     getBookings,
     deleteBooking,
-    createBooking
+    createBooking,
+    updateStatusBooking
 }

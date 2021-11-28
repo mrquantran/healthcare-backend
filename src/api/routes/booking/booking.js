@@ -35,6 +35,15 @@ router.post('/', validate([
 ]), isAuth, booking.createBooking)
 
 
+router.put('/:id/status', validate([
+    param('id')
+        .notEmpty()
+        .withMessage('Id can not be empty')
+        .isString()
+        .withMessage('Id is not correct format')
+]), isAuth, booking.updateStatusBooking)
+
+
 router.delete('/:id', validate([
     param('id')
         .notEmpty()

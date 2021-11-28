@@ -69,6 +69,7 @@ model BookingDate {
 
   startDate DateTime
   isConfirm Boolean  @default(false)
+  isActive  Boolean  @default(true)
   Booking   Booking? @relation(fields: [bookingId], references: [id])
   bookingId String?  @db.ObjectId
 }
