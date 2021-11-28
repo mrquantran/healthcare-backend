@@ -48,7 +48,8 @@ const getBookings = async (req, res) => {
                 }
             },
             orderBy: {
-                createdAt: 'desc'
+                // createdAt: 'desc',
+                status: 'asc'
             },
             select: {
                 id: true,
