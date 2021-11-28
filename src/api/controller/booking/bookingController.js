@@ -94,9 +94,51 @@ const getBookings = async (req, res) => {
         const httpError = createHttpError(500, error);
         return res.status(500).json({ message: httpError });
     }
+}
 
+const deleteBooking = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const data = await prisma.booking.findUnique({
+            where: {
+                id
+            },
+        })
+
+        if (!data) {
+            res.status(401).json({ message: 'No data' })
+        } else {
+            await prisma.bookingDate.deleteMany({
+                where: {
+                    bookingId: id
+                }
+            })
+
+            await prisma.bookingCategory.deleteMany({
+                where: {
+                    bookingId: id
+                }
+            })
+
+            await prisma.booking.delete({
+                where: {
+                    id
+                }
+            })
+            return res.status(200).json({ message: 'Delete booking successfully' })
+        }
+
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        // 500 (Internal Server Error) - Something has gone wrong in your application.
+        const httpError = createHttpError(500, error);
+        return res.status(500).json({ message: httpError });
+    }
 }
 
 export const booking = {
-    getBookings
+    getBookings,
+    deleteBooking
 }
