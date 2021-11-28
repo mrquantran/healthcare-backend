@@ -83,7 +83,7 @@ const getBookings = async (req, res) => {
             const paginationData = paginatedData(page, perPage, filteredData)
 
 
-            res.status(200).json(paginationData)
+            res.status(200).json({ data: paginationData, total: mappingData.length })
         } else {
             res.status(401).json({ message: 'No data' })
         }
