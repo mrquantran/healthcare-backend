@@ -9,6 +9,8 @@ export const STATUS = {
   reject: "REJECTED"
 };
 
+export const FORMAT_DATE = 'DD/MM/YYYY'
+
 // algorithm
 export const JWT_ALGORITHM = 'HS256';
 

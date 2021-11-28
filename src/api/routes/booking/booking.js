@@ -11,6 +11,30 @@ const router = express.Router();
 
 router.get('/', isAuth, booking.getBookings)
 
+router.post('/', validate([
+    body('title')
+        .notEmpty()
+        .withMessage('Title can not be empty')
+        .isString()
+        .withMessage('Title is not correct format'),
+    body('place')
+        .notEmpty()
+        .withMessage('Place can not be empty')
+        .isString()
+        .withMessage('Place is not correct format'),
+    body('category')
+        .notEmpty()
+        .withMessage('Category can not be empty')
+        .isString()
+        .withMessage('Category is not correct format'),
+    body('date')
+        .notEmpty()
+        .withMessage('Date can not be empty')
+        .isArray({ min: 1, max: 3 })
+        .withMessage('Category is not correct format')
+]), isAuth, booking.createBooking)
+
+
 router.delete('/:id', validate([
     param('id')
         .notEmpty()

@@ -1,6 +1,9 @@
 import pkg from '@prisma/client';
 import createHttpError from 'http-errors';
+import { FORMAT_DATE, STATUS } from '../../constant/ENUM.js';
 import { getDecodedToken } from '../../helpers/auth.helper.js';
+import moment from 'moment'
+import { formatISO } from 'date-fns';
 
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
@@ -47,10 +50,10 @@ const getBookings = async (req, res) => {
                     email: token.email,
                 }
             },
-            orderBy: {
-                // createdAt: 'desc',
-                status: 'asc'
-            },
+            orderBy: [
+                { status: 'asc' },
+                { createdAt: 'desc'}
+            ],
             select: {
                 id: true,
                 title: true,
@@ -88,6 +91,55 @@ const getBookings = async (req, res) => {
         } else {
             res.status(401).json({ message: 'No data' })
         }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        // 500 (Internal Server Error) - Something has gone wrong in your application.
+        const httpError = createHttpError(500, error);
+        return res.status(500).json({ message: httpError });
+    }
+}
+
+const createBooking = async (req, res) => {
+    try {
+        const { title, place, category, date } = req.body
+
+        const dateMapping = date.map((item) => {
+            let newDate = moment(item, FORMAT_DATE)
+            newDate = moment().toISOString()
+            return newDate
+        })
+
+        const token = await getDecodedToken(req);
+        
+        const data = await prisma.booking.create({
+            data: {
+                title: title,
+                place: place,
+                user: {
+                    connect: {
+                        email: token.email
+                    }
+                },
+                status: STATUS.pending,
+                category: {
+                    create: {
+                        category: {
+                            connect: {
+                                title: category
+                            }
+                        }
+                    }
+                },
+                date: {
+                    create: dateMapping.map((item) => ({
+                        startDate: item,
+                    }))
+                }
+            }
+        })
+
+        return res.status(200).json({message:'Create new booking successfully'})
     } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
@@ -141,5 +193,6 @@ const deleteBooking = async (req, res) => {
 
 export const booking = {
     getBookings,
-    deleteBooking
+    deleteBooking,
+    createBooking
 }
