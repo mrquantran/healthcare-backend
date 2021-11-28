@@ -48,12 +48,13 @@ const login = async (req, res) => {
         firstName: true,
         lastName: true,
         password: true,
+        type:true,
         id: true,
       },
     });
 
     const {
-      email, firstName, lastName, password, id,
+      email, firstName, lastName, password, id, type
     } = emailUser;
 
     if (!email) {
@@ -71,7 +72,7 @@ const login = async (req, res) => {
     }
 
     const user = {
-      email, firstName, lastName, id,
+      email, firstName, lastName, id, type
     };
 
     const accessToken = await jwtHelper.generateToken(user, accessTokenSecret, accessTokenLife);

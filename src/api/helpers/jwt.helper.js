@@ -10,13 +10,14 @@ import { JWT_ALGORITHM } from '../constant/ENUM.js';
 export const generateToken = (user, secretSignature, tokenLife) => new Promise((resolve, reject) => {
   // Định nghĩa những thông tin của user mà bạn muốn lưu vào token ở đây
   const {
-    email, firstName, lastName, id,
+    email, firstName, lastName, id, type
   } = user;
   // Thực hiện ký và tạo token
   jwt.sign(
     {
       data: {
         email,
+        type,
         firstName,
         lastName,
         id,
