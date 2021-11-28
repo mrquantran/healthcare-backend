@@ -17,7 +17,7 @@ const users = [
     type: TYPE_USER.admin,
   },
   {
-    email: "quantranUser@gmail.com",
+    email: "quantranuser@gmail.com",
     firstName: "Quan",
     lastName: "Tran User",
     password: "123456",
