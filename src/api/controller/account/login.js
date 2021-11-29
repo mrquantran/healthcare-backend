@@ -64,7 +64,7 @@ const login = async (req, res) => {
 
     // 👇 create a date object for the email token expiration
     const tokenExpiration = add(new Date(), {
-      minutes: 1,
+      minutes: 60,
     });
 
     //   compare password
