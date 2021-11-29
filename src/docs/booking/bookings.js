@@ -58,6 +58,26 @@ const bookings = {
             },
         },
     },
+    post: {
+        tags: ['Bookings'],
+        description: 'Create new booking',
+        security: [
+            { bearerAuth: [] },
+        ],
+        operationId: 'createBooking',
+        responses: {
+            200: {
+                description: 'Bookings were obtained',
+                content: {
+                    'application/json': {
+                        schema: {
+                            $ref: '#/components/schemas/Bookings',
+                        },
+                    },
+                },
+            },
+        },
+    },
 }
 
 export default bookings;
