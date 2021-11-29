@@ -77,7 +77,6 @@ const login = async (req, res) => {
     };
 
     const accessToken = await jwtHelper.generateToken(user, accessTokenSecret, accessTokenLife);
-
     const refreshToken = await jwtHelper.generateToken(user, refreshTokenSecret, refreshTokenLife);
 
     // 👇 create a short lived token and update user or create if they don't exist
@@ -118,14 +117,15 @@ const refreshToken = async (req, res) => {
   if (refreshTokenFromClient) {
     try {
 
-      const refreshTokenDatabase = prisma.token.findUnique({
+      const { refreshToken } = await prisma.token.findUnique({
         where: {
           refreshToken: refreshTokenFromClient
         }
       })
 
-      if (!refreshTokenDatabase) {
-        res.status(403).json({
+
+      if (!refreshToken) {
+        return res.status(403).json({
           message: 'Invalid refresh token.',
         });
       }
@@ -133,10 +133,33 @@ const refreshToken = async (req, res) => {
       const decoded = await jwtHelper.verifyToken(refreshTokenFromClient, refreshTokenSecret);
 
       const userData = decoded.data;
-      const accessToken = await jwtHelper.generateToken(userData, accessTokenSecret, accessTokenLife);
+      const accessToken = await jwtHelper.generateToken(userData, accessTokenSecret, 60);
+
+      // 👇 create a date object for the email token expiration
+      const tokenExpiration = add(new Date(), {
+        minutes: 1,
+      });
+
+      await prisma.token.create({
+        data: {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          expiration: tokenExpiration,
+          user: {
+            connectOrCreate: {
+              create: {
+                email: userData.email
+              },
+              where: {
+                email: userData.email,
+              }
+            }
+          },
+        }
+      })
 
       // send new access token
-      return res.status(200).json({ accessToken });
+      return res.status(200).json({ accessToken, refreshToken });
     } catch (error) {
       res.status(403).json({
         message: 'Invalid refresh token.',

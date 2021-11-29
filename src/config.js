@@ -19,6 +19,6 @@ export const clientURL = process.env.CLIENT_URL || "http://localhost:";
 export const corsUrl = process.env.CORS_URL || "*";
 
 export const tokenInfo = {
-  accessTokenLife: process.env.ACCESS_TOKEN_LIFE || "60", //1h
+  accessTokenLife: process.env.ACCESS_TOKEN_LIFE || "1h", //1h
   refreshTokenLife: process.env.REFRESH_TOKEN_LIFE || "3650d",
 };

@@ -18,14 +18,11 @@ router.post('/login', validate([
 ]), login);
 
 router.post('/refresh-token', validate([
-  body('accessToken')
-    .notEmpty()
-    .withMessage('email can not be empty')
-    .isString()
-    .withMessage('email is not a valid email address'),
   body('refreshToken')
     .notEmpty()
-    .withMessage('password can not be empty')
+    .withMessage('Refresh token can not be empty')
+    .isString()
+    .withMessage('Refresh token is not a string'),
 ]), refreshToken)
 
 export default router;

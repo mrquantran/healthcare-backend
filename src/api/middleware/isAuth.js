@@ -29,8 +29,14 @@ export const isAuth = async (req, res, next) => {
         },
       });
 
+      if (!token) {
+        return res.status(403).json({
+          message: 'No token provided.',
+        });
+      }
 
-      if (moment().diff(token.expiration) > 0 ) {
+
+      if (moment().diff(token.expiration) > 0) {
         return res.status(401).json({
           message: 'Token expiration',
         });
@@ -43,11 +49,6 @@ export const isAuth = async (req, res, next) => {
       //   });
       // }
 
-      if (!token) {
-        return res.status(403).json({
-          message: 'No token provided.',
-        });
-      }
 
       if (!token.valid) {
         return res.status(403).json({
