@@ -1,6 +1,4 @@
 import pkg from '@prisma/client';
-import moment from 'moment';
-
 /**
  * Middleware: Authorization user by Token
  * @param {*} req
@@ -56,7 +54,7 @@ export const isAuth = async (req, res, next) => {
         });
       }
 
-      return next();
+      next();
     } catch (error) {
       return res.status(401).json({
         message: 'Unauthorized.',
