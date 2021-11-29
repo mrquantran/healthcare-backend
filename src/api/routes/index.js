@@ -21,6 +21,7 @@ router.use('/bookings', booking)
 router.use('/booking', feedback)
 
 // Endpoint to login or register and to send the short lived token
-router.use('/login', login);
+router.use('/', login);
+
 
 export default router;

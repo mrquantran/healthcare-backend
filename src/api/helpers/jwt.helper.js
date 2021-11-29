@@ -26,7 +26,7 @@ export const generateToken = (user, secretSignature, tokenLife) => new Promise((
     secretSignature,
     {
       algorithm: JWT_ALGORITHM,
-      expiresIn: tokenLife,
+      expiresIn: 60,
     },
     (error, token) => {
       if (error) {

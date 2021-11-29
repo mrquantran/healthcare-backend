@@ -1,4 +1,5 @@
 import pkg from '@prisma/client';
+import moment from 'moment';
 
 /**
  * Middleware: Authorization user by Token
@@ -12,7 +13,7 @@ const prisma = new PrismaClient();
 // eslint-disable-next-line consistent-return
 export const isAuth = async (req, res, next) => {
   // Lấy token được gửi lên từ phía client, thông thường tốt nhất là các bạn nên truyền token vào header
- 	const authHeader = req.header('Authorization');
+  const authHeader = req.header('Authorization');
   const tokenFromClient = authHeader && authHeader.split(' ')[1];
 
   if (tokenFromClient) {
@@ -27,6 +28,20 @@ export const isAuth = async (req, res, next) => {
           expiration: true,
         },
       });
+
+
+      if (moment().diff(token.expiration) > 0 ) {
+        return res.status(401).json({
+          message: 'Token expiration',
+        });
+      }
+
+      // if () {
+
+      //    return res.status(401).json({
+      //     message: 'Unauthorized.',
+      //   });
+      // }
 
       if (!token) {
         return res.status(403).json({
@@ -47,7 +62,7 @@ export const isAuth = async (req, res, next) => {
       });
     }
   } else {
-// not find token
+    // not find token
     return res.status(403).send({
       message: 'No token provided.',
     });

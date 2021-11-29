@@ -21,12 +21,11 @@ export const findSpecificUser = async (emailInput) => {
   return email;
 };
 
-const tokenList = {};
 
 const { accessTokenLife, refreshTokenLife } = tokenInfo;
 
-const comparePassword = (passwordReq,password) => {
-    return !bcrypt.compareSync(passwordReq, password)
+const comparePassword = (passwordReq, password) => {
+  return !bcrypt.compareSync(passwordReq, password)
 }
 
 /**
@@ -48,27 +47,29 @@ const login = async (req, res) => {
         firstName: true,
         lastName: true,
         password: true,
-        type:true,
+        type: true,
         id: true,
       },
     });
+
+    if (!emailUser) {
+      return res.status(403).json({ message: 'Email not have in database' });
+    }
 
     const {
       email, firstName, lastName, password, id, type
     } = emailUser;
 
-    if (!email) {
-      return res.status(403).json({ message: 'email not created' });
-    }
+
 
     // 👇 create a date object for the email token expiration
     const tokenExpiration = add(new Date(), {
-      minutes: 60,
+      minutes: 1,
     });
 
     //   compare password
-    if (comparePassword(passwordReq,password)) {
-      return res.status(402).json({ message: 'password not correct' });
+    if (comparePassword(passwordReq, password)) {
+      return res.status(403).json({ message: 'password not correct' });
     }
 
     const user = {
@@ -87,13 +88,13 @@ const login = async (req, res) => {
         expiration: tokenExpiration,
         user: {
           connectOrCreate: {
-          create:{
-            email
+            create: {
+              email
             },
             where: {
-            email,
+              email,
+            }
           }
-        }
         },
       },
     });
@@ -112,22 +113,29 @@ const login = async (req, res) => {
  * @param {*} res
  */
 const refreshToken = async (req, res) => {
-  // User gửi mã refresh token kèm theo trong body
   const refreshTokenFromClient = req.body.refreshToken;
 
-  // Nếu như tồn tại refreshToken truyền lên và nó cũng nằm trong tokenList của chúng ta
-  if (refreshTokenFromClient && (tokenList[refreshTokenFromClient])) {
+  if (refreshTokenFromClient) {
     try {
-      // Verify kiểm tra tính hợp lệ của cái refreshToken và lấy dữ liệu giải mã decoded
+
+      const refreshTokenDatabase = prisma.token.findUnique({
+        where: {
+          refreshToken: refreshTokenFromClient
+        }
+      })
+
+      if (!refreshTokenDatabase) {
+        res.status(403).json({
+          message: 'Invalid refresh token.',
+        });
+      }
+
       const decoded = await jwtHelper.verifyToken(refreshTokenFromClient, refreshTokenSecret);
 
-      // Thông tin user lúc này các bạn có thể lấy thông qua biến decoded.data
-      // có thể mở comment dòng debug bên dưới để xem là rõ nhé.
-      // debug("decoded: ", decoded);
-      const userFakeData = decoded.data;
-      const accessToken = await jwtHelper.generateToken(userFakeData, accessTokenSecret, accessTokenLife);
+      const userData = decoded.data;
+      const accessToken = await jwtHelper.generateToken(userData, accessTokenSecret, accessTokenLife);
 
-      // gửi token mới về cho người dùng
+      // send new access token
       return res.status(200).json({ accessToken });
     } catch (error) {
       res.status(403).json({

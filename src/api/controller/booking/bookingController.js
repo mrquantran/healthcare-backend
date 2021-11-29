@@ -96,6 +96,11 @@ const getBookings = async (req, res) => {
                     title: true,
                     place: true,
                     status: true,
+                    feedback: {
+                        select: {
+                            description: true,
+                        }
+                    },
                     category: {
                         select: {
                             category: {
@@ -136,14 +141,21 @@ const getBookings = async (req, res) => {
 
         if (data) {
             const mappingData = data.map((item) => {
-                const { user, category, ...rest } = item
+                const { user, category, feedback, ...rest } = item
 
+                // get feedback description
+                let feedbackDescription = null;
+                if (feedback && feedback.description) {
+                    feedbackDescription = feedback.description
+                }
+
+                // get category 
                 let title = null;
                 if (category && category.category) {
                     title = category.category.title
                 }
 
-                return { ...rest, email: user.email, category: title }
+                return { ...rest, email: user.email, category: title, feedback: feedbackDescription }
             })
 
             //handle filter data
