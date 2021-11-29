@@ -115,6 +115,7 @@ const getBookings = async (req, res) => {
                             id: true,
                             startDate: true,
                             isConfirm: true,
+                            isActive: true,
                         }
                     }
 
@@ -258,8 +259,7 @@ const deleteBooking = async (req, res) => {
 
 const updateStatusBooking = async (req, res) => {
     try {
-        const { dateId } = req.query;
-        const { status } = req.body;
+        const { dateId, status } = req.body;
         const { id } = req.params;
         const token = await getDecodedToken(req);
 
@@ -326,6 +326,16 @@ const updateStatusBooking = async (req, res) => {
                         status: status
                     }
                 })
+
+                await prisma.bookingDate.updateMany({
+                    where: {
+                        bookingId: id
+                    },
+                    data: {
+                        isActive: false
+                    }
+                })
+
             } else {
                 return res.status(401).json({ message: 'No data' })
 

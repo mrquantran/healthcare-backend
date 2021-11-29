@@ -46,26 +46,26 @@ async function main() {
     });
   }
 
-  //booking
-  for (const booking of data.bookings) {
-    await prisma.booking.create({
-      data: {
-        title: booking.title,
-        place: booking.place,
-        status: booking.status,
-        user: {
-          connect: {
-            email:booking.user
-          }
-        },
-        date: {
-          create: booking.date.map((item) => ({
-            startDate: item,
-          }))
-        },
-      },
-    });
-  }
+  // //booking
+  // for (const booking of data.bookings) {
+  //   await prisma.booking.create({
+  //     data: {
+  //       title: booking.title,
+  //       place: booking.place,
+  //       status: booking.status,
+  //       user: {
+  //         connect: {
+  //           email:booking.user
+  //         }
+  //       },
+  //       date: {
+  //         create: booking.date.map((item) => ({
+  //           startDate: item,
+  //         }))
+  //       },
+  //     },
+  //   });
+  // }
 
 }
 
