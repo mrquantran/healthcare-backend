@@ -184,11 +184,12 @@ const createBooking = async (req, res) => {
 
         const dateMapping = date.map((item) => {
             let newDate = moment(item, FORMAT_DATE)
-            newDate = moment().toISOString()
-            return newDate
+            const isoDate = newDate.format()
+            return isoDate
         })
 
         const token = await getDecodedToken(req);
+
 
         const data = await prisma.booking.create({
             data: {

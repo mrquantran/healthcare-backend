@@ -98,4 +98,5 @@ model Categories {
   title        String            @unique
   description  String?
   bookingStore BookingCategory[]
+  createdAt    DateTime          @default(now())
 }
