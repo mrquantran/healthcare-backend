@@ -1,6 +1,6 @@
 import pkg from '@prisma/client';
 import createHttpError from 'http-errors';
-import { STATUS } from '../../constant/ENUM';
+import { STATUS } from '../../constant/ENUM.js';
 
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
@@ -14,15 +14,20 @@ const createRejectReason = async (req, res) => {
                 bookingId: id
             }
         })
-        if (data) {
-            return res.status(401).json({ message: 'Data exist' })
-        } else {
 
-            const booking = await prisma.booking.findUnique({
-                where: {
-                    id: id
-                }
-            })
+        const booking = await prisma.booking.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        if (!booking) {
+            return res.status(401).json({ message: 'No data' })
+        }
+
+        if (data) {
+            return res.status(401).json({ message: 'Feedback exist' })
+        } else {
 
             if (booking.status !== STATUS.reject) {
                 return res.status(401).json({ message: 'Not correct status' })
