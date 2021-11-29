@@ -36,11 +36,11 @@ export const isAuth = async (req, res, next) => {
       }
 
 
-      if (moment().diff(token.expiration) > 0) {
-        return res.status(401).json({
-          message: 'Token expiration',
-        });
-      }
+      // if (moment().diff(token.expiration) > 0) {
+      //   return res.status(403).json({
+      //     message: 'Token expiration',
+      //   });
+      // }
 
       // if () {
 

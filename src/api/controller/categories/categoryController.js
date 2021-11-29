@@ -26,6 +26,29 @@ const getCategoryOptions = async (req, res) => {
     }
 }
 
+const createCategory = async (req, res) => {
+    try {
+        const { title } = req.body
+        const data = await prisma.categories.create({
+            data: {
+                title: title,
+                description: 'Description of category'
+            }
+        })
+
+        if (data) {
+            return res.status(200).json(data)
+        }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        // 500 (Internal Server Error) - Something has gone wrong in your application.
+        const httpError = createHttpError(500, error);
+        return res.status(500).json({ message: httpError });
+    }
+}
+
+
 export const categories = {
-    getCategoryOptions
+    getCategoryOptions, createCategory
 }

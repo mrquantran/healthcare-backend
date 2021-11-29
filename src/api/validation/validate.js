@@ -10,5 +10,5 @@ export const validate = (validations) => async (req, res, next) => {
     return next();
   }
 
-  res.status(401).json({ errors: errors.array() });
+  res.status(400).json({ errors: errors.array() });
 };
