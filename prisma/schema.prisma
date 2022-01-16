@@ -100,3 +100,14 @@ model Categories {
   bookingStore BookingCategory[]
   createdAt    DateTime          @default(now())
 }
+
+model Clinic {
+  id          String            @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  no          Int
+  name        String    
+  address     String
+  district    String
+  workHours   String
+  city        String
+  email       String
+}
