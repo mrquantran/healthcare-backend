@@ -98,7 +98,7 @@ const login = async (req, res) => {
       },
     });
 
-    return res.status(200).json({ accessToken, refreshToken });
+    return res.status(200).json({ accessToken, refreshToken, type });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
