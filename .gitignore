@@ -23,4 +23,4 @@ coverage
 # Environment varibles
 .env
 
-migration.sql
+migration.sqlsendgrid.env

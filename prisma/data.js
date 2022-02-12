@@ -10,6 +10,13 @@ const users = [
     type: TYPE_USER.user,
   },
   {
+    email: "quangdo2000@gmail.com",
+    firstName: "Quang",
+    lastName: "Do",
+    password: "123456",
+    type: TYPE_USER.user,
+  },
+  {
     email: "adminuser@gmail.com",
     firstName: "admin",
     lastName: "quan",

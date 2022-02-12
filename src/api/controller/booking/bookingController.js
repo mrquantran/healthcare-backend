@@ -4,6 +4,7 @@ import { FORMAT_DATE, STATUS } from '../../constant/ENUM.js';
 import { getDecodedToken } from '../../helpers/auth.helper.js';
 import moment from 'moment'
 import { TYPE_USER } from './../../constant/ENUM.js';
+import { sendMail } from '../../service/sendgrid.js';
 
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
@@ -225,6 +226,11 @@ const createBooking = async (req, res) => {
             }
         })
 
+        // send email after create booking successful       WHAT IS THE EMAIL VARIABLE USING FOR INPUT????????????????????????????????????????????????????????????? HOW TO GET IT.
+        sendMail.sendMailAfterCreateBooking(token.email);
+
+        
+
         return res.status(200).json({ message: 'Create new booking successfully' })
     } catch (error) {
         // eslint-disable-next-line no-console
@@ -359,6 +365,18 @@ const updateStatusBooking = async (req, res) => {
             }
         }
 
+        const booking = await prisma.booking.findUnique({
+            where: { id }
+        })
+
+        // get UserEmail from booking
+        const userEmail = await prisma.user.findUnique({
+            where: {
+                id: booking.userId
+            }
+        })
+
+        sendMail.sendMailAfterApprovedBooking(userEmail)
         return res.status(200).json({ message: 'Update booking items successfully' })
 
     }

@@ -76,4 +76,5 @@ router.put('/:id', validate([
     body('city').optional(),
 ]), clinicController.updateClinic)
 
+
 export default router;
