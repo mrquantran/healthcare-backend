@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 import pkg from '@prisma/client';
 import createHttpError from 'http-errors';
-import exportDataFromExcel from '../../service/excelJS.js';
-
+// import exportDataFromExcel from '../../service/exceljs.js';
+import exportDataFromExcel from '../../service/exceljs.js';
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
@@ -17,7 +19,6 @@ const uploadMechanism = async (req,res) => {
         const data = await exportDataFromExcel(buffer)
     
         data.forEach(async (item) => {
-           
            
             const createMany = await prisma.clinic.create({
                 data: item,
@@ -40,27 +41,27 @@ const uploadMechanism = async (req,res) => {
     }
 }
 
-const createClinic = async (req, res) => {
-    try {
-        const { id, name, address, district, workHours, city, email } = req.body
+// const createClinic = async (req, res) => {
+//     try {
+//         const { id, name, address, district, workHours, city, email } = req.body
     
-        const data = await prisma.clinic.create({
-            data: {
-                id:     id,
-                name:   name,
-                address:    address,
-                district:   district,
-                workHours:  workHours,
-                city:       city,
-                email:      email
-            }
-        })
-        return res.status(200).json({message: 'Create clinic successfully'})
-    } catch (error) {
-        console.log(error);
+//         const data = await prisma.clinic.create({
+//             data: {
+//                 id:     id,
+//                 name:   name,
+//                 address:    address,
+//                 district:   district,
+//                 workHours:  workHours,
+//                 city:       city,
+//                 email:      email
+//             }
+//         })
+//         return res.status(200).json({message: 'Create clinic successfully'})
+//     } catch (error) {
+//         // console.log(error);
         
-    }
-}
+//     }
+// }
 
 export const clinics = {
    uploadMechanism
