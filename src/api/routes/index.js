@@ -4,7 +4,7 @@ import booking from "./booking/booking.js"
 import categories from "./categories/categories.js"
 import feedback from "./feedback/feedback.js"
 import clinic from "./clinic/clinic.js"
-
+import account from './account/accountmanagement.js'
 
 const router = express.Router();
 
@@ -23,6 +23,8 @@ router.use('/booking', feedback)
 
 // End point for upload clinic 
 router.use('/clinic', clinic)
+
+router.use('/account', account)
 
 // Endpoint to login or register and to send the short lived token
 router.use('/', login);

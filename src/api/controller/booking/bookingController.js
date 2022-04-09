@@ -299,10 +299,7 @@ const updateStatusBooking = async (req, res) => {
 
             let newBookingDate = [...bookingDate]
             newBookingDate = newBookingDate.map((item) => {
-                if (item.id === dateId) {
-                    return { ...item, isConfirm: true, isActive: true }
-                }
-                return { ...item, isConfirm: false, isActive: false }
+                return { ...item, isConfirm: true, isActive: true }
             })
 
             //2. update booking date status
