@@ -227,9 +227,9 @@ const createBooking = async (req, res) => {
         })
 
         // send email after create booking successful       WHAT IS THE EMAIL VARIABLE USING FOR INPUT????????????????????????????????????????????????????????????? HOW TO GET IT.
-        sendMail.sendMailAfterCreateBooking(token.email);
+        sendMail.sendMailAfterCreateBooking(token.email, { status: title, provider, address: place, bookingTime: moment(dateMapping[0]).format('DD/MM/YYYY hh:mm a') });
 
-        
+
 
         return res.status(200).json({ message: 'Create new booking successfully' })
     } catch (error) {
