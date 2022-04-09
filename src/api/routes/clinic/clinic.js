@@ -76,4 +76,7 @@ router.put('/:id', validate([
     body('city').optional(),
 ]), clinicController.updateClinic)
 
+router.post('/uploadMechanism', clinics.uploadMechanism)
+
+
 export default router;

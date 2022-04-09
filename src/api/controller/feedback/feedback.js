@@ -1,6 +1,7 @@
 import pkg from '@prisma/client';
 import createHttpError from 'http-errors';
 import { STATUS } from '../../constant/ENUM.js';
+import { sendMail } from '../../service/sendgrid.js';
 
 const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
@@ -44,7 +45,16 @@ const createRejectReason = async (req, res) => {
                 }
             })
 
-            return res.status(200).json({ message: 'Create feedback successfully' })
+            // get User Email from Booking.
+            const userEmail = await prisma.user.findUnique({
+                where: {
+                    id: booking.userId
+                }
+            })
+
+            sendMail.sendMailAfterRejectedBooking(userEmail, description)
+            
+            return res.status(200).json({ message: 'Create feedback successfully' + userEmail })
         }
     } catch (error) {
         // eslint-disable-next-line no-console
