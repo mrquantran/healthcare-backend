@@ -32,3 +32,29 @@ export const getAllUser = async (req, res) => {
         return res.status(500).json({ message: error });
     }
 };
+
+export const createAccount = async (req, res) => {
+    try {
+        const { name, roleId, email } = req.body
+        const saltRounds = await bcrypt.genSalt(10);
+        const hash = bcrypt.hashSync('123456', saltRounds);
+
+        await prisma.user.create({
+            data: {
+                firstName: name,
+                lastName: '',
+                active: true,
+                email: email,
+                type: roleId,
+                password: hash
+            }
+        })
+
+        return res.status(200).json({ msg: 'Create account successfully' });
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        return res.status(500).json({ message: error });
+    }
+};
+

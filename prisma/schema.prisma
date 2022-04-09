@@ -18,7 +18,7 @@ enum UserRole {
 }
 
 model User {
-  id        String    @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   email     String    @unique
   password  String?
   firstName String?
@@ -30,7 +30,7 @@ model User {
 }
 
 model Token {
-  id           String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   accessToken  String?  @unique
@@ -50,7 +50,7 @@ enum BookingStatus {
 }
 
 model Booking {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   createdAt DateTime               @default(now())
   updatedAt DateTime               @updatedAt
@@ -70,7 +70,7 @@ model Booking {
 }
 
 model BookingRejectFeedBack {
-  id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   description String
@@ -79,7 +79,7 @@ model BookingRejectFeedBack {
 }
 
 model BookingDate {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   startDate DateTime
   isConfirm Boolean  @default(false)
@@ -89,7 +89,7 @@ model BookingDate {
 }
 
 model BookingCategory {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   booking    Booking?    @relation(fields: [bookingId], references: [id])
   bookingId  String?     @unique @db.ObjectId
@@ -98,7 +98,7 @@ model BookingCategory {
 }
 
 model Categories {
-  id           String            @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id           String            @id @default(auto()) @map("_id") @db.ObjectId
   title        String            @unique
   description  String?
   bookingStore BookingCategory[]
@@ -106,7 +106,7 @@ model Categories {
 }
 
 model Clinic {
-  id        String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   no        Int
   name      String
   address   String
