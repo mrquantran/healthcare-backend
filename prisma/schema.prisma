@@ -56,6 +56,9 @@ model Booking {
   updatedAt DateTime               @updatedAt
   title     String
   place     String
+  provider  String
+  phone     String
+  why       String
   status    BookingStatus
   date      BookingDate[]
   category  BookingCategory?
@@ -103,12 +106,12 @@ model Categories {
 }
 
 model Clinic {
-  id          String            @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  no          Int
-  name        String    
-  address     String
-  district    String
-  workHours   String
-  city        String
-  email       String
+  id        String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  no        Int
+  name      String
+  address   String
+  district  String
+  workHours String
+  city      String
+  email     String
 }

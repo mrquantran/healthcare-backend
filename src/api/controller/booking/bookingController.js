@@ -96,6 +96,8 @@ const getBookings = async (req, res) => {
                     title: true,
                     place: true,
                     status: true,
+                    provider: true,
+                    phone: true,
                     feedback: {
                         select: {
                             description: true,
@@ -137,6 +139,7 @@ const getBookings = async (req, res) => {
             })
 
             data = [...restItem, ...rejectItem]
+            // console.log(data)
         }
 
         if (data) {
@@ -155,7 +158,7 @@ const getBookings = async (req, res) => {
                     title = category.category.title
                 }
 
-                return { ...rest, email: user.email, category: title, feedback: feedbackDescription }
+                return { ...rest, email: user.email, category: title, feedback: feedbackDescription, dateTime: item.date[0].startDate }
             })
 
             //handle filter data
@@ -163,7 +166,6 @@ const getBookings = async (req, res) => {
 
             // handle pagination data
             const paginationData = paginatedData(page, perPage, filteredData)
-
 
             res.status(200).json({ data: paginationData, total: mappingData.length })
         } else {
@@ -180,10 +182,11 @@ const getBookings = async (req, res) => {
 
 const createBooking = async (req, res) => {
     try {
-        const { title, place, category, date } = req.body
+        const { title, place, category, date, provider, why, time, phone } = req.body
 
         const dateMapping = date.map((item) => {
-            let newDate = moment(item, FORMAT_DATE)
+            const dateTime = item + " " + time
+            let newDate = moment(dateTime, 'DD/MM/YYYY hh:mm a')
             const isoDate = newDate.format()
             return isoDate
         })
@@ -195,6 +198,9 @@ const createBooking = async (req, res) => {
             data: {
                 title: title,
                 place: place,
+                provider: provider,
+                why: why,
+                phone: phone,
                 user: {
                     connect: {
                         email: token.email
@@ -294,7 +300,7 @@ const updateStatusBooking = async (req, res) => {
             let newBookingDate = [...bookingDate]
             newBookingDate = newBookingDate.map((item) => {
                 if (item.id === dateId) {
-                    return { ...item, isConfirm: true,isActive: true  }
+                    return { ...item, isConfirm: true, isActive: true }
                 }
                 return { ...item, isConfirm: false, isActive: false }
             })
