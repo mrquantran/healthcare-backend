@@ -98,6 +98,7 @@ const getBookings = async (req, res) => {
                     status: true,
                     provider: true,
                     phone: true,
+                    createdAt: true,
                     feedback: {
                         select: {
                             description: true,
